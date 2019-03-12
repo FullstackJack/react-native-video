@@ -132,6 +132,7 @@ public class ReactVideoView extends ScalableVideoView implements
     private boolean mPlayInBackground = false;
     private boolean mBackgroundPaused = false;
     private boolean mIsFullscreen = false;
+    private boolean mIsPictureInPicture = false;
 
     private int mMainVer = 0;
     private int mPatchVer = 0;
@@ -170,6 +171,9 @@ public class ReactVideoView extends ScalableVideoView implements
             }
         };
     }
+
+    @Override
+    
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -476,6 +480,35 @@ public class ReactVideoView extends ScalableVideoView implements
             } else {
                 Log.e(ReactVideoViewManager.REACT_CLASS, "Setting playback rate is not yet supported on Android versions below 6.0");
             }
+        }
+    }
+
+    private boolean supportsPiPMode() {
+        //  return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+        return hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+    }
+
+    // TODO: Write up a way to send listener events
+    // May require sending events from activity... ugh.
+    // https://stackoverflow.com/questions/40113261/passing-continuous-call-back-from-android-native-to-react-native-components
+    public void setPictureInPicture(boolean isPictureInPicture) {
+        if (!supportsPiPMode()) {
+            return;
+        }
+
+        if (isPictureInPicture == mIsPictureInPicture) {
+            return;
+        }
+
+        mIsPictureInPicture = isPictureInPicture;
+        
+        Activity activity = mThemedReactContext.getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
+
+        if (mIsPictureInPicture) {
+            activity.enterPictureInPictureMode();
         }
     }
 

@@ -6,7 +6,6 @@ def safeExtGet(prop, fallback) {
 
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', 27)
-    buildToolsVersion safeExtGet('buildToolsVersion', '27.0.3')
  
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
